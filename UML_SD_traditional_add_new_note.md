@@ -1,0 +1,44 @@
+Traditional Web Application architecture - All logic is on the server, browser only renders HTML
+```mermaid
+sequenceDiagram
+    participant browser
+    participant server
+    
+    Note right of browser: User enters a new note in the text box and hits the "Save" button
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    activate server
+    
+    Note right of browser: User-entered note content is sent as the Payload of the POST request
+    
+    Note left of server: Note content is added alongside a new Date to a server-side notes array
+
+    server-->>browser: HTTP Redirect (302 Found)
+    deactivate server
+    
+    Note left of server: Server sends a redirect asking the browser to perform a GET request to the "Location" property in the initial POST request's Response Header
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: the css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: the JavaScript file
+    deactivate server
+
+    Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "GET request sent", "date": "2024-04-28T11:52:58.723Z" }, ... ]
+    deactivate server
+
+    Note right of browser: The browser executes the callback function that renders the notes
+```
